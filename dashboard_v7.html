@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sertão Solar – Gestão de Vendas (Demo)</title>
+  <!-- Reuse the same styles as in v6 -->
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f9fb;
+      color: #333;
+    }
+    header {
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header img {
+      height: 60px;
+      margin-right: 20px;
+    }
+    header h1 {
+      font-size: 22px;
+      color: #2b3e51;
+    }
+    nav button {
+      margin-left: 10px;
+      padding: 8px 12px;
+      border: none;
+      background: #6bbf4f;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    nav button:hover {
+      background: #58a73d;
+    }
+    main {
+      padding: 20px;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      align-items: end;
+    }
+    form label {
+      display: flex;
+      flex-direction: column;
+      font-weight: bold;
+      font-size: 14px;
+      color: #2b3e51;
+    }
+    form input, form select {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    form button[type="submit"] {
+      grid-column: span 2;
+      padding: 10px 15px;
+      background-color: #6bbf4f;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    form button[type="submit"]:hover {
+      background-color: #58a73d;
+    }
+    .filter-panel {
+      background: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .filter-panel label {
+      font-weight: bold;
+      font-size: 14px;
+      color: #2b3e51;
+    }
+    .filter-panel select {
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 8px 12px;
+      border: 1px solid #eee;
+      text-align: left;
+    }
+    th {
+      background-color: #eff3f8;
+      font-weight: bold;
+    }
+    .delete-btn {
+      background: none;
+      border: none;
+      color: #c0392b;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .charts-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+    .chart-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      flex: 1 1 300px;
+    }
+    #bestSeller {
+      font-weight: bold;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+    .vendor-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .vendor-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 8px;
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 4px;
+    }
+    .vendor-color-box {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div style="display:flex; align-items:center;">
+      <img src="LOGO SERTAO.png" alt="Logo Sertão Solar">
+      <h1>Sertão Solar – Gestão de Vendas (Demo)</h1>
+    </div>
+    <nav>
+      <button type="button" id="btnRegistrar">Registrar</button>
+      <button type="button" id="btnGraficos">Gráficos</button>
+    </nav>
+  </header>
+  <main>
+    <section id="registrarSection">
+      <form id="entryForm">
+        <label>
+          Cliente
+          <input type="text" id="cliente" required>
+        </label>
+        <label>
+          Vendedor
+          <input type="text" id="vendedor" required>
+        </label>
+        <label>
+          kWh Vendidos
+          <input type="number" id="kwh" min="0" step="0.01" required>
+        </label>
+        <label>
+          Data da Venda
+          <input type="date" id="dataVenda" required>
+        </label>
+        <label>
+          Valor da Venda (R$)
+          <input type="number" id="valorVenda" min="0" step="0.01" required>
+        </label>
+        <label>
+          Opção de Pagamento
+          <select id="opcaoPagamento" required>
+            <option value="">Selecione</option>
+            <option value="A VISTA">A VISTA</option>
+            <option value="SOLFACIL">SOLFACIL</option>
+            <option value="SOL AGORA">SOL AGORA</option>
+            <option value="EOS">EOS</option>
+            <option value="BV">BV</option>
+            <option value="BANCO DO NORDESTE">BANCO DO NORDESTE</option>
+            <option value="CARTÃO DE CRÉDITO">CARTÃO DE CRÉDITO</option>
+            <option value="NÃO INFORMADO">NÃO INFORMADO</option>
+          </select>
+        </label>
+        <label>
+          Cidade
+          <input type="text" id="cidade" required>
+        </label>
+        <button type="submit">Adicionar</button>
+      </form>
+      <div class="filter-panel">
+        <label for="filterMonth">Mês:</label>
+        <select id="filterMonth">
+          <option value="">Todos</option>
+          <option value="1">Janeiro</option>
+          <option value="2">Fevereiro</option>
+          <option value="3">Março</option>
+          <option value="4">Abril</option>
+          <option value="5">Maio</option>
+          <option value="6">Junho</option>
+          <option value="7">Julho</option>
+          <option value="8">Agosto</option>
+          <option value="9">Setembro</option>
+          <option value="10">Outubro</option>
+          <option value="11">Novembro</option>
+          <option value="12">Dezembro</option>
+        </select>
+        <label for="filterYear">Ano:</label>
+        <select id="filterYear">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <table id="entriesTable">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Vendedor</th>
+            <th>kWh</th>
+            <th>Data</th>
+            <th>Valor (R$)</th>
+            <th>Opção Pagamento</th>
+            <th>Cidade</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+    <section id="graficosSection" style="display:none;">
+      <div class="filter-panel">
+        <label for="graphMonth">Mês:</label>
+        <select id="graphMonth">
+          <option value="">Todos</option>
+          <option value="1">Janeiro</option>
+          <option value="2">Fevereiro</option>
+          <option value="3">Março</option>
+          <option value="4">Abril</option>
+          <option value="5">Maio</option>
+          <option value="6">Junho</option>
+          <option value="7">Julho</option>
+          <option value="8">Agosto</option>
+          <option value="9">Setembro</option>
+          <option value="10">Outubro</option>
+          <option value="11">Novembro</option>
+          <option value="12">Dezembro</option>
+        </select>
+        <label for="graphYear">Ano:</label>
+        <select id="graphYear">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div id="vendorLegend" class="vendor-legend"></div>
+      <div id="bestSeller"></div>
+      <div class="charts-container">
+        <div class="chart-box">
+          <h3>kWh Vendidos por Vendedor</h3>
+          <canvas id="vendorKwhChart" height="200"></canvas>
+        </div>
+        <div class="chart-box">
+          <h3>Valor Total Vendido por Vendedor (R$)</h3>
+          <canvas id="vendorValueChart" height="200"></canvas>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // dados e elementos compartilhados com v6
+    const entries = [];
+    const form = document.getElementById('entryForm');
+    const tableBody = document.querySelector('#entriesTable tbody');
+    const bestSellerDiv = document.getElementById('bestSeller');
+    const registrarSection = document.getElementById('registrarSection');
+    const graficosSection = document.getElementById('graficosSection');
+    const btnRegistrar = document.getElementById('btnRegistrar');
+    const btnGraficos = document.getElementById('btnGraficos');
+    const filterMonth = document.getElementById('filterMonth');
+    const filterYear = document.getElementById('filterYear');
+    const graphMonth = document.getElementById('graphMonth');
+    const graphYear = document.getElementById('graphYear');
+    const vendorLegendContainer = document.getElementById('vendorLegend');
+    let vendorKwhChart;
+    let vendorValueChart;
+    const vendorColorMap = {
+      'MATHEUS': '#ff69b4',      // rosa
+      'ALBERLANIO': '#000080',   // azul marinho
+      'MARCELO': '#ff0000',      // vermelho
+      'JOAO FABIO': '#006400',   // verde escuro
+      'JUBERLANIO': '#808080',   // cinza
+      'ORLANDO': '#FFD700',      // amarelo
+      'ADELSON': '#000000',      // preto
+      'ARTHUR': '#87CEEB'        // azul claro
+    };
+    const fallbackColors = ['#6bbf4f','#3aaed9','#f39c12','#e74c3c','#8e44ad','#2ecc71','#3498db'];
+    function renderVendorLegend() {
+      vendorLegendContainer.innerHTML = '';
+      Object.keys(vendorColorMap).forEach(vendor => {
+        const item = document.createElement('div');
+        item.classList.add('vendor-legend-item');
+        const colorBox = document.createElement('span');
+        colorBox.classList.add('vendor-color-box');
+        colorBox.style.backgroundColor = vendorColorMap[vendor];
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = vendor;
+        item.appendChild(colorBox);
+        item.appendChild(nameSpan);
+        vendorLegendContainer.appendChild(item);
+      });
+    }
+    btnRegistrar.addEventListener('click', () => {
+      registrarSection.style.display = '';
+      graficosSection.style.display = 'none';
+    });
+    btnGraficos.addEventListener('click', () => {
+      registrarSection.style.display = 'none';
+      graficosSection.style.display = '';
+      updateGraphs();
+    });
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      const cliente = document.getElementById('cliente').value.trim();
+      const vendedor = document.getElementById('vendedor').value.trim().toUpperCase();
+      const kwh = parseFloat(document.getElementById('kwh').value) || 0;
+      const data = document.getElementById('dataVenda').value;
+      const valor = parseFloat(document.getElementById('valorVenda').value) || 0;
+      const opcaoPagamento = document.getElementById('opcaoPagamento').value;
+      const cidade = document.getElementById('cidade').value.trim();
+      entries.push({ cliente, vendedor, kwh, data, valor, opcaoPagamento, cidade });
+      form.reset();
+      updateYearOptions();
+      updateTable();
+      updateGraphs();
+    });
+    function updateYearOptions() {
+      const years = Array.from(new Set(entries.map(e => e.data.split('-')[0])));
+      years.sort();
+      updateSelectOptions(filterYear, years);
+      updateSelectOptions(graphYear, years);
+    }
+    function updateSelectOptions(selectElem, years) {
+      const currentValue = selectElem.value;
+      while (selectElem.options.length > 1) selectElem.remove(1);
+      years.forEach(year => {
+        const opt = document.createElement('option');
+        opt.value = year;
+        opt.textContent = year;
+        selectElem.appendChild(opt);
+      });
+      if (currentValue) selectElem.value = currentValue;
+    }
+    function updateTable() {
+      const monthFilter = filterMonth.value;
+      const yearFilter = filterYear.value;
+      tableBody.innerHTML = '';
+      entries.forEach((entry, index) => {
+        const [year, month] = entry.data.split('-');
+        if ((yearFilter && year !== yearFilter) || (monthFilter && month !== monthFilter.padStart(2,'0'))) return;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${entry.cliente}</td>
+          <td>${entry.vendedor}</td>
+          <td>${entry.kwh.toFixed(2)}</td>
+          <td>${entry.data}</td>
+          <td>${entry.valor.toFixed(2)}</td>
+          <td>${entry.opcaoPagamento}</td>
+          <td>${entry.cidade}</td>
+          <td><button class="delete-btn" data-index="${index}" title="Excluir">🗑️</button></td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    }
+    tableBody.addEventListener('click', event => {
+      if (event.target.classList.contains('delete-btn')) {
+        const idx = parseInt(event.target.getAttribute('data-index'));
+        if (!isNaN(idx)) {
+          entries.splice(idx,1);
+          updateYearOptions();
+          updateTable();
+          updateGraphs();
+        }
+      }
+    });
+    function updateGraphs() {
+      renderVendorLegend();
+      const monthFilter = graphMonth.value;
+      const yearFilter = graphYear.value;
+      const totalsKwh = {};
+      const totalsValue = {};
+      Object.keys(vendorColorMap).forEach(v => {
+        totalsKwh[v] = 0;
+        totalsValue[v] = 0;
+      });
+      entries.forEach(entry => {
+        const [year, month] = entry.data.split('-');
+        if ((yearFilter && year !== yearFilter) || (monthFilter && month !== monthFilter.padStart(2,'0'))) return;
+        const v = entry.vendedor;
+        totalsKwh[v] = (totalsKwh[v] || 0) + entry.kwh;
+        totalsValue[v] = (totalsValue[v] || 0) + entry.valor;
+      });
+      const vendors = Object.keys(totalsKwh);
+      const kwhData = vendors.map(v => totalsKwh[v]);
+      const valueData = vendors.map(v => totalsValue[v]);
+      let bestVendor = '';
+      let maxKwh = -Infinity;
+      vendors.forEach(v => {
+        if (totalsKwh[v] > maxKwh) {
+          maxKwh = totalsKwh[v];
+          bestVendor = v;
+        }
+      });
+      bestSellerDiv.textContent = vendors.length>0 ? `Vendedor destaque: ${bestVendor} – ${maxKwh.toFixed(2)} kWh vendidos` : '';
+      const colors = vendors.map((v,i) => vendorColorMap[v] || fallbackColors[i%fallbackColors.length]);
+      const valueColors = vendors.map((v,i) => vendorColorMap[v] || fallbackColors[(i+3)%fallbackColors.length]);
+      if (vendorKwhChart) vendorKwhChart.destroy();
+      if (vendorValueChart) vendorValueChart.destroy();
+      const ctxK = document.getElementById('vendorKwhChart').getContext('2d');
+      vendorKwhChart = new Chart(ctxK, {
+        type:'bar',
+        data:{ labels: vendors, datasets:[{label:'kWh Vendidos', data: kwhData, backgroundColor: colors}]},
+        options:{ plugins:{legend:{display:false}}, scales:{ y:{beginAtZero:true, title:{display:true, text:'kWh'}}, x:{title:{display:true, text:'Vendedor'}}}}
+      });
+      const ctxV = document.getElementById('vendorValueChart').getContext('2d');
+      vendorValueChart = new Chart(ctxV, {
+        type:'bar',
+        data:{ labels: vendors, datasets:[{label:'Valor Total (R$)', data: valueData, backgroundColor: valueColors}]},
+        options:{ plugins:{legend:{display:false}}, scales:{ y:{beginAtZero:true, title:{display:true, text:'R$'}}, x:{title:{display:true, text:'Vendedor'}}}}
+      });
+    }
+    filterMonth.addEventListener('change', updateTable);
+    filterYear.addEventListener('change', updateTable);
+    graphMonth.addEventListener('change', updateGraphs);
+    graphYear.addEventListener('change', updateGraphs);
+    // Inicializa legendas e anos
+    renderVendorLegend();
+    updateYearOptions();
+    // ------- Inserção automática de dados para demonstração -------
+    const initialData = [
+      { cliente:'ANDREA MARIA DE OLIVEIRA', vendedor:'MATHEUS', kwh:500, data:'2025-01-09', valor:12000, opcaoPagamento:'A VISTA', cidade:'BOM SUCESSO' },
+      { cliente:'AUGUSTO NOBREGA DE SOUSA', vendedor:'ARTHUR', kwh:700, data:'2025-01-23', valor:13900, opcaoPagamento:'CARTÃO DE CRÉDITO', cidade:'CAJAZEIRINHAS' },
+      { cliente:'CLEINIO ALVES LACERDA', vendedor:'ALBERLANIO', kwh:500, data:'2025-01-23', valor:12000, opcaoPagamento:'BANCO DO NORDESTE', cidade:'CAJAZEIRAS' },
+      { cliente:'ELISANGELA ALENCAR DA COSTA', vendedor:'JOAO FABIO', kwh:1000, data:'2025-01-07', valor:17000, opcaoPagamento:'A VISTA', cidade:'SOUSA' },
+      { cliente:'FRANCISCO JOAQUIM DE OLIVEIRA', vendedor:'ALBERLANIO', kwh:1000, data:'2025-01-07', valor:16900, opcaoPagamento:'SOLFACIL', cidade:'CACHOEIRA DOS INDIOS' },
+      { cliente:'GERALDA MARIA QUEIROGA', vendedor:'ALBERLANIO', kwh:1500, data:'2025-01-16', valor:22900, opcaoPagamento:'SOLFACIL', cidade:'CAJAZEIRAS' },
+      { cliente:'JAMILE RIBEIRO DA SILVA', vendedor:'ARTHUR', kwh:300, data:'2025-01-17', valor:7850, opcaoPagamento:'NÃO INFORMADO', cidade:'JOAO PESSOA' },
+      { cliente:'JOAO ALMEIDA NETO', vendedor:'MATHEUS', kwh:700, data:'2024-12-23', valor:16000, opcaoPagamento:'NÃO INFORMADO', cidade:'APARECIDA' },
+      { cliente:'JOSE ALMAIR DELFINO', vendedor:'ARTHUR', kwh:500, data:'2025-01-22', valor:12500, opcaoPagamento:'NÃO INFORMADO', cidade:'SANTANA DE MANGUEIRA' },
+      { cliente:'JUSSANDRO ALVES', vendedor:'ARTHUR', kwh:1000, data:'2025-01-02', valor:16900, opcaoPagamento:'A VISTA', cidade:'MARIZOPOLIS' },
+      { cliente:'LUCINALDO ALVES DE LIMA', vendedor:'ARTHUR', kwh:300, data:'2025-01-17', valor:7850, opcaoPagamento:'CARTÃO DE CRÉDITO', cidade:'JOAO PESSOA' },
+      { cliente:'MARCONDES LOPES DE SALES', vendedor:'ALBERLANIO', kwh:500, data:'2025-01-25', valor:12000, opcaoPagamento:'SOLFACIL', cidade:'CACHOEIRA DOS INDIOS' },
+      { cliente:'MARIA EDNATANIA', vendedor:'ALBERLANIO', kwh:700, data:'2025-01-29', valor:15000, opcaoPagamento:'BV', cidade:'LASTRO' },
+      { cliente:'MARIA NEZUIR FERREIRA DE ALMEIDA', vendedor:'ALBERLANIO', kwh:1000, data:'2025-01-13', valor:17000, opcaoPagamento:'NÃO INFORMADO', cidade:'CACHOEIRA DOS INDIOS' },
+      { cliente:'MARIO SERGIO MONTEIRO DOS SANTOS', vendedor:'ALBERLANIO', kwh:2000, data:'2025-01-25', valor:22900, opcaoPagamento:'EOS', cidade:'ITAPORANGA' },
+      { cliente:'REGINALDO BATISTA DE OLIVEIRA', vendedor:'JOAO FABIO', kwh:1000, data:'2024-12-26', valor:17000, opcaoPagamento:'A VISTA', cidade:'VIEIROPOLIS' },
+      { cliente:'VERA LUCIA SOUSA DA SILVA', vendedor:'ARTHUR', kwh:500, data:'2025-01-23', valor:10000, opcaoPagamento:'CARTÃO DE CRÉDITO', cidade:'JOAO PESSOA' }
+    ];
+    initialData.forEach(item => entries.push(item));
+    updateYearOptions();
+    updateTable();
+    updateGraphs();
+  </script>
+</body>
+</html>
